@@ -81,31 +81,23 @@ function makeDeck() {
     // }
 }
 
-function drawCard() {
-    playerHand.unshift(deck[0]);
-    deck.shift();
-
-    displayUpdatedHands("player");
-    // debug purposes
-    // console.log("Player's hand: ");
-    // for (let i = 0; i < playerHand.length; i++) {
-    //     console.log(playerHand[i].rank + " of " + playerHand[i].suit);
-    // };
-
-    // console.log("Deck: ");
-    // for (let i = 0; i < deck.length; i++) {
-    //     console.log(deck[i].rank + " of " + deck[i].suit);
-    // }
+function drawCards(cnt) {
+    for (let i = 0; i < cnt; i++) {
+        playerHand.unshift(deck[0]);
+        deck.shift();
+        displayUpdatedHand("player");
+    }
 }
 
-function dealerDrawCard() {
-    dealerHand.push(deck[0]);
-    deck.shift();
-
-    displayUpdatedHands("dealer");
+function dealerDrawCards(cnt) {
+    for (let i = 0; i < cnt; i++) {
+        dealerHand.unshift(deck[0]);
+        deck.shift();
+        displayUpdatedHand("dealer");
+    }
 }
 
-function displayUpdatedHands(person) {
+function displayUpdatedHand(person) {
     const tableCards = document.getElementById(`${person}-hand`);
     const cardImg = document.createElement('img');
 
@@ -122,6 +114,10 @@ function shuffleDeck() {
     	const j = Math.floor(Math.random() * (i + 1));
     	[deck[i], deck[j]] = [deck[j], deck[i]];
   	}
+}
+
+function startHand() {
+
 }
 
 makeDeck();
