@@ -174,6 +174,15 @@
   .fixed {
     position: fixed;
   }
+  .relative {
+    position: relative;
+  }
+  .right-30 {
+    right: calc(var(--spacing) * 30);
+  }
+  .left-30 {
+    left: calc(var(--spacing) * 30);
+  }
   .m-2 {
     margin: calc(var(--spacing) * 2);
   }
@@ -251,8 +260,14 @@
   .w-36 {
     width: calc(var(--spacing) * 36);
   }
+  .w-40 {
+    width: calc(var(--spacing) * 40);
+  }
   .w-48 {
     width: calc(var(--spacing) * 48);
+  }
+  .w-90 {
+    width: calc(var(--spacing) * 90);
   }
   .w-auto {
     width: auto;
@@ -323,6 +338,9 @@
   }
   .underline {
     text-decoration-line: underline;
+  }
+  .opacity-0 {
+    opacity: 0%;
   }
   .outline {
     outline-style: var(--tw-outline-style);
