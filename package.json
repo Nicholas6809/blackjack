@@ -1,4 +1,10 @@
 {
+  "name": "blackjack",
+  "version": "1.0.0",
+  "description": "A blackjack app I made to celebrate the fact that I managed to code a deck of cards in Javascript",
+  "main": "main.js",
+  "author": "Nicholas",
+  "license": "GPL-3.0-only",
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.0",
     "electron": "^44.5.1",
