@@ -5,6 +5,9 @@
   "main": "main.js",
   "author": "Nicholas",
   "license": "GPL-3.0-only",
+  "scripts": {
+    "start": "electron ."
+  },
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.0",
     "electron": "^44.5.1",
