@@ -73,17 +73,11 @@ function makeDeck() {
             deck.push(new Card(j + 1, suits[i]))
         }
     }
-    
-    // debug purposes
-    // console.log("deck upon makeDeck()");
-    // for (let i = 0; i < deck.length; i++) {
-    //     console.log(deck[i].rank + " of " + deck[i].suit);
-    // }
 }
 
 function drawCards(cnt) {
     for (let i = 0; i < cnt; i++) {
-        playerHand.unshift(deck[0]);
+        playerHand.push(deck.shift());
         deck.shift();
         displayUpdatedHand("player");
     }
@@ -91,22 +85,31 @@ function drawCards(cnt) {
 
 function dealerDrawCards(cnt) {
     for (let i = 0; i < cnt; i++) {
-        dealerHand.unshift(deck[0]);
-        deck.shift();
+        dealerHand.push(deck.shift());
         displayUpdatedHand("dealer");
     }
 }
 
 function displayUpdatedHand(person) {
-    const tableCards = document.getElementById(`${person}-hand`);
+    const displayedCards = document.getElementById(`${person}-hand`);
     const cardImg = document.createElement('img');
 
-    cardImg.src = cardImgs[deck[0].rank + playerHand[0].suit.toLowerCase()];
+    switch (person) {
+        case "player":
+            cardImg.src = cardImgs[playerHand[playerHand.length - 1].rank + playerHand[playerHand.length - 1].suit.toLowerCase()];
+            break;
+        case "dealer":
+            cardImg.src = cardImgs[dealerHand[dealerHand.length - 1].rank + dealerHand[dealerHand.length - 1].suit.toLowerCase()];
+            break;
+        default:
+            console.log("Oops! Either you're seeing this because you passed an unsupported argument to displayUpdatedHand(), or you forgot break keywords when writing this switch case. Check your code dingus")
+    }
+    
     cardImg.style.width = "7.5rem";
     cardImg.style.borderRadius = "0.5rem";
     cardImg.style.margin = "0.5rem";
 
-    tableCards.appendChild(cardImg);
+    displayedCards.appendChild(cardImg);
 }
 
 function shuffleDeck() {
@@ -117,7 +120,13 @@ function shuffleDeck() {
 }
 
 function startHand() {
+    const displayedDealerCards = document.getElementById('dealer-hand');
+    const displayedPlayerCards = document.getElementById('player-hand');
 
+    dealerDrawCards(2);
+    drawCards(2);
+
+    displayedDealerCards.lastElementChild.src = "imgs/back.png";
 }
 
 makeDeck();
