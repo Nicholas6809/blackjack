@@ -127,10 +127,21 @@ function startHand() {
     const displayedCards = document.getElementById('player-hand');
     const displayedDealerCards = document.getElementById('dealer-hand');
 
-    // TODO: clear cards upon start of new hand
-
     playerHandValue = 0;
     dealerHandValue = 0;
+
+    if (playerHand.length > 0) {
+        leftoverDeck.unshift(playerHand.shift);
+    }
+
+    if (dealerHand.length > 0) {
+        leftoverDeck.unshift(dealerHand.shift);
+    }
+
+    displayedCards.innerHTML = "";
+    displayedDealerCards.innerHTML = "";
+
+    shuffleDeck();
 
     for (let i = 0; i < 2; i++) {
         hitDealer();
@@ -292,4 +303,3 @@ function endHand() {
 }
 
 makeDeck();
-shuffleDeck();
