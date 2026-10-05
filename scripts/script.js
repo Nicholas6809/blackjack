@@ -158,6 +158,10 @@ function startHand() {
         hitPlayer();
     }
 
+    if (dealerHandValue > 21) {
+        dealerHandValue -= 10;
+    }
+
     displayedDealerCards.lastElementChild.src = "imgs/back.png";
 
     replaceStartButton();
@@ -166,7 +170,9 @@ function startHand() {
 function replaceStartButton() {
     const buttonArea = document.getElementById('button-area');
 
-    buttonArea.firstElementChild.remove();
+    while (buttonArea.childElementCount > 0) {
+        buttonArea.firstElementChild.remove();
+    }
 
     const hitButton = document.createElement('button');
     const standButton = document.createElement('button');
@@ -191,7 +197,7 @@ function replaceStartButton() {
     standButton.style.paddingRight = "0.5rem";
     standButton.style.paddingTop = "0.25rem";
     standButton.style.paddingBottom = "0.25rem";
-    hitButton.style.marginLeft = "0.5rem";
+    standButton.style.marginLeft = "0.5rem";
     standButton.style.backgroundColor = "oklch(48.8% 0.243 264.376)";
     standButton.style.border = "2px solid oklch(70.7% 0.165 254.624)";
     standButton.style.borderRadius = "0.375rem";
@@ -211,6 +217,10 @@ function hitPlayer() {
     const lastCard = playerHand.length - 1;
 
     switch (true) {
+        // TODO: make player able to choose ace value
+        // case playerHand[lastCard].rank == 1:
+        //     playerHand[lastCard].value = resolveAce();
+        //     break;
         case playerHand[lastCard].rank < 11:
             playerHand[lastCard].value = playerHand[lastCard].rank;
             break;
@@ -223,7 +233,7 @@ function hitPlayer() {
 
     playerHandValue += playerHand[lastCard].value;
 
-    console.log (playerHand[lastCard].value);
+    console.log(playerHand[lastCard].value);
     console.log(playerHandValue);
 
     setTimeout(function() {
@@ -240,6 +250,14 @@ function hitDealer() {
     const lastCard = dealerHand.length - 1;
 
     switch (true) {
+        case dealerHand[lastCard].rank == 1:
+            if (dealerHandValue + 11 > 21) {
+                dealerHand[lastCard].value = 1;
+            }
+            else {
+                dealerHand[lastCard].value == 11;
+            }
+            break;
         case dealerHand[lastCard].rank < 11:
             dealerHand[lastCard].value = dealerHand[lastCard].rank;
             break;
@@ -252,12 +270,14 @@ function hitDealer() {
 
     dealerHandValue += dealerHand[lastCard].value;
 
-    console.log (dealerHand[lastCard].value);
+    console.log(dealerHand[lastCard].value);
     console.log(dealerHandValue);
 
-    if (dealerHandValue > 21) {
-        alert("Dealer busted!");
-    }
+    setTimeout(function() {
+        if (dealerHandValue > 21) {
+            alert("Dealer busted!");
+        }
+    }, 300);
 }
 
 function dealerTurn() {
@@ -265,7 +285,7 @@ function dealerTurn() {
     const cardImg = document.getElementById('dealer-hand').lastElementChild
     cardImg.src = cardImgs[dealerHand[lastCard].rank + dealerHand[lastCard].suit.toLowerCase()];
 
-    if (playerHandValue <= 21) {
+    if (playerHandValue < 21) {
         while (dealerHandValue < 17) {
             hitDealer();
         }
@@ -313,5 +333,61 @@ function endHand() {
 
     buttonArea.appendChild(playAgainButton);
 }
+
+// TODO: make player able to choose ace value
+// function resolveAce() {
+//     const buttonArea = document.getElementById('button-area');
+
+//     while (buttonArea.childElementCount > 0) {
+//         buttonArea.firstElementChild.remove();
+//     }
+
+//     const elevenButton = document.createElement('button');
+//     const oneButton = document.createElement('button');
+//     let value = 0;
+
+//     // Styling for eleven button
+
+//     elevenButton.id = "eleven-button";
+//     elevenButton.innerText = "11";
+//     elevenButton.style.paddingLeft = "0.5rem";
+//     elevenButton.style.paddingRight = "0.5rem";
+//     elevenButton.style.paddingTop = "0.25rem";
+//     elevenButton.style.paddingBottom = "0.25rem";
+//     elevenButton.style.marginRight = "0.5rem";
+//     elevenButton.style.backgroundColor = "oklch(37.3% 0.034 259.733)";
+//     elevenButton.style.border = "2px solid oklch(70.4% 0.04 256.788)";
+//     elevenButton.style.borderRadius = "0.375rem";
+//     elevenButton.style.color = "oklch(92.9% 0.013 255.508)";
+
+//     // Styling for one button
+
+//     oneButton.id = "one-button";
+//     oneButton.innerText = "1";
+//     oneButton.style.paddingLeft = "0.5rem";
+//     oneButton.style.paddingRight = "0.5rem";
+//     oneButton.style.paddingTop = "0.25rem";
+//     oneButton.style.paddingBottom = "0.25rem";
+//     oneButton.style.marginRight = "0.5rem";
+//     oneButton.style.backgroundColor = "oklch(37.3% 0.034 259.733)";
+//     oneButton.style.border = "2px solid oklch(70.4% 0.04 256.788)";
+//     oneButton.style.borderRadius = "0.375rem";
+//     oneButton.style.color = "oklch(92.9% 0.013 255.508)";
+
+//     elevenButton.addEventListener("click", function() {
+//         value = 11;
+//         replaceStartButton();
+//     })
+
+//     oneButton.addEventListener("click", function() {
+//         value = 1;
+//         replaceStartButton();
+//     })
+
+//     buttonArea.appendChild(elevenButton);
+//     buttonArea.appendChild(oneButton);
+
+//     return value;
+// }
 
 makeDeck();
