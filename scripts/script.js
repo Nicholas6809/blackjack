@@ -1,6 +1,7 @@
 const deck = [];
 const dealerHand = [];
 const playerHand = [];
+const leftoverDeck = [];
 
 // lookup table for card images so i dont have to rename my card files
 const cardImgs = {
@@ -120,13 +121,53 @@ function shuffleDeck() {
 }
 
 function startHand() {
+    
     const displayedDealerCards = document.getElementById('dealer-hand');
-    const displayedPlayerCards = document.getElementById('player-hand');
 
     dealerDrawCards(2);
     drawCards(2);
 
     displayedDealerCards.lastElementChild.src = "imgs/back.png";
+
+    replaceStartButton();
+}
+
+function replaceStartButton() {
+    const buttonArea = document.getElementById('button-area');
+
+    buttonArea.firstElementChild.remove();
+
+    const hitButton = document.createElement('button');
+    const standButton = document.createElement('button');
+
+    // Define the inline styles for the Hit button in a brute forcey way akin to Steve Harvey mark I
+    hitButton.id = "hit-button";
+    hitButton.innerText = "Hit!";
+    hitButton.style.paddingLeft = "0.5rem";
+    hitButton.style.paddingRight = "0.5rem";
+    hitButton.style.paddingTop = "0.25rem";
+    hitButton.style.paddingBottom = "0.25rem";
+    hitButton.style.marginRight = "0.5rem";
+    hitButton.style.backgroundColor = "oklch(50.5% 0.213 27.518)";
+    hitButton.style.border = "2px solid oklch(70.4% 0.191 22.216)";
+    hitButton.style.borderRadius = "0.375rem";
+    hitButton.style.color = "oklch(88.5% 0.062 18.334)";
+
+    // Repeat for Stand button
+    standButton.id = "stand-button";
+    standButton.innerText = "Stand!";
+    standButton.style.paddingLeft = "0.5rem";
+    standButton.style.paddingRight = "0.5rem";
+    standButton.style.paddingTop = "0.25rem";
+    standButton.style.paddingBottom = "0.25rem";
+    hitButton.style.marginLeft = "0.5rem";
+    standButton.style.backgroundColor = "oklch(48.8% 0.243 264.376)";
+    standButton.style.border = "2px solid oklch(70.7% 0.165 254.624)";
+    standButton.style.borderRadius = "0.375rem";
+    standButton.style.color = "oklch(88.2% 0.059 254.128)";
+
+    buttonArea.appendChild(hitButton);
+    buttonArea.appendChild(standButton);
 }
 
 makeDeck();
