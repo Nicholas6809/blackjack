@@ -81,6 +81,13 @@ function makeDeck() {
 
 function drawCards(cnt) {
     for (let i = 0; i < cnt; i++) {
+        if (deck.length < 1) {
+            for (let i = 0; i < 52; i++) {
+                deck.unshift(leftoverDeck.shift);
+            }
+            shuffleDeck();
+            document.getElementById('leftovers').style.opacity = "0%";
+        }
         playerHand.push(deck.shift());
         deck.shift();
         displayUpdatedHand("player");
@@ -126,16 +133,19 @@ function shuffleDeck() {
 function startHand() {
     const displayedCards = document.getElementById('player-hand');
     const displayedDealerCards = document.getElementById('dealer-hand');
+    const displayedLeftovers = document.getElementById('leftovers');
 
     playerHandValue = 0;
     dealerHandValue = 0;
 
     if (playerHand.length > 0) {
         leftoverDeck.unshift(playerHand.shift);
+        displayedLeftovers.style.opacity = "100%";
     }
 
     if (dealerHand.length > 0) {
         leftoverDeck.unshift(dealerHand.shift);
+        displayedLeftovers.style.opacity = "100%";
     }
 
     displayedCards.innerHTML = "";
