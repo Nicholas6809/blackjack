@@ -3,6 +3,9 @@ const dealerHand = [];
 const playerHand = [];
 const leftoverDeck = [];
 
+let playerHandValue = 0;
+let dealerHandValue = 0;
+
 // lookup table for card images so i dont have to rename my card files
 const cardImgs = {
     "1clubs": "imgs/ace_clubs.png",
@@ -121,11 +124,18 @@ function shuffleDeck() {
 }
 
 function startHand() {
-    
+    const displayedCards = document.getElementById('player-hand');
     const displayedDealerCards = document.getElementById('dealer-hand');
 
-    dealerDrawCards(2);
-    drawCards(2);
+    // TODO: clear cards upon start of new hand
+
+    playerHandValue = 0;
+    dealerHandValue = 0;
+
+    for (let i = 0; i < 2; i++) {
+        hitDealer();
+        hitPlayer();
+    }
 
     displayedDealerCards.lastElementChild.src = "imgs/back.png";
 
@@ -166,8 +176,119 @@ function replaceStartButton() {
     standButton.style.borderRadius = "0.375rem";
     standButton.style.color = "oklch(88.2% 0.059 254.128)";
 
+    // Add event listeners so that these actually do something
+    hitButton.addEventListener("click", hitPlayer);
+    standButton.addEventListener("click", dealerTurn);
+
     buttonArea.appendChild(hitButton);
     buttonArea.appendChild(standButton);
+}
+
+function hitPlayer() {
+    drawCards(1);
+
+    const lastCard = playerHand.length - 1;
+
+    switch (true) {
+        case playerHand[lastCard].rank < 11:
+            playerHand[lastCard].value = playerHand[lastCard].rank;
+            break;
+        case playerHand[lastCard].rank >= 11:
+            playerHand[lastCard].value = 10;
+            break;
+        default:
+            alert("fuck the switch case dont work")
+    }
+
+    playerHandValue += playerHand[lastCard].value;
+
+    console.log (playerHand[lastCard].value);
+    console.log(playerHandValue);
+
+    if (playerHandValue > 21) {
+        alert("You busted!");
+        dealerTurn();
+    }
+}
+
+function hitDealer() {
+    dealerDrawCards(1);
+
+    const lastCard = dealerHand.length - 1;
+
+    switch (true) {
+        case dealerHand[lastCard].rank < 11:
+            dealerHand[lastCard].value = dealerHand[lastCard].rank;
+            break;
+        case dealerHand[lastCard].rank >= 11:
+            dealerHand[lastCard].value = 10;
+            break;
+        default:
+            alert("fuck the switch case dont work")
+    }
+
+    dealerHandValue += dealerHand[lastCard].value;
+
+    console.log (dealerHand[lastCard].value);
+    console.log(dealerHandValue);
+
+    if (dealerHandValue > 21) {
+        alert("Dealer busted!");
+    }
+}
+
+function dealerTurn() {
+    const lastCard = dealerHand.length - 1;
+    const cardImg = document.getElementById('dealer-hand').lastElementChild
+    cardImg.src = cardImgs[dealerHand[lastCard].rank + dealerHand[lastCard].suit.toLowerCase()];
+
+    if (playerHandValue <= 21) {
+        while (dealerHandValue < 17) {
+            hitDealer();
+        }
+    }
+    
+    endHand();
+}
+
+function endHand() {
+    let playerWin = false;
+
+    if (playerHandValue >= dealerHandValue && playerHandValue <= 21) {
+        playerWin = true;
+    }
+    else if (dealerHandValue > 21) {
+        playerWin = true;
+    }
+
+    if (playerWin) {
+        alert("You win!")
+    }
+    else {
+        alert("You lose...")
+    }
+
+    const buttonArea = document.getElementById('button-area');
+
+    buttonArea.firstElementChild.remove();
+    buttonArea.firstElementChild.remove();
+
+    const playAgainButton = document.createElement('button');
+
+    playAgainButton.id = "again-button";
+    playAgainButton.innerText = "Play again!";
+    playAgainButton.style.paddingLeft = "0.5rem";
+    playAgainButton.style.paddingRight = "0.5rem";
+    playAgainButton.style.paddingTop = "0.25rem";
+    playAgainButton.style.paddingBottom = "0.25rem";
+    playAgainButton.style.backgroundColor = "oklch(52.7% 0.154 150.069)";
+    playAgainButton.style.border = "2px solid oklch(79.2% 0.209 151.711)";
+    playAgainButton.style.borderRadius = "0.375rem";
+    playAgainButton.style.color = "oklch(92.5% 0.084 155.995)";
+
+    playAgainButton.addEventListener('click', startHand);
+
+    buttonArea.appendChild(playAgainButton);
 }
 
 makeDeck();
