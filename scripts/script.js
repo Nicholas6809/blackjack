@@ -82,22 +82,34 @@ function makeDeck() {
 function drawCards(cnt) {
     for (let i = 0; i < cnt; i++) {
         if (deck.length < 1) {
-            for (let i = 0; i < 52; i++) {
-                deck.unshift(leftoverDeck.shift);
+            const leftoverCnt = leftoverDeck.length;
+            for (let i = 0; i < leftoverCnt; i++) {
+                deck.unshift(leftoverDeck.shift());
             }
             shuffleDeck();
             document.getElementById('leftovers').style.opacity = "0%";
         }
         playerHand.push(deck.shift());
-        deck.shift();
         displayUpdatedHand("player");
+        
+        debugShit();
     }
 }
 
 function dealerDrawCards(cnt) {
     for (let i = 0; i < cnt; i++) {
+        if (deck.length < 1) {
+            for (let i = 0; i < 52; i++) {
+                deck.unshift(leftoverDeck.shift());
+            }
+            shuffleDeck();
+            document.getElementById('leftovers').style.opacity = "0%";
+        }
+
         dealerHand.push(deck.shift());
         displayUpdatedHand("dealer");
+
+        debugShit();
     }
 }
 
@@ -139,12 +151,20 @@ function startHand() {
     dealerHandValue = 0;
 
     if (playerHand.length > 0) {
-        leftoverDeck.unshift(playerHand.shift);
+        const handLength = playerHand.length;
+        console.log("Player's hand length is greater than 0")
+        for (let i = 0; i <= handLength; i++){
+            leftoverDeck.push(playerHand.shift());
+        }
         displayedLeftovers.style.opacity = "100%";
     }
 
     if (dealerHand.length > 0) {
-        leftoverDeck.unshift(dealerHand.shift);
+        const handLength = dealerHand.length;
+        console.log("Dealer's hand length is greater than 0")
+        for (let i = 0; i <= handLength; i++){
+            leftoverDeck.push(dealerHand.shift());
+        }
         displayedLeftovers.style.opacity = "100%";
     }
 
@@ -165,6 +185,9 @@ function startHand() {
     displayedDealerCards.lastElementChild.src = "imgs/back.png";
 
     replaceStartButton();
+
+    console.log("Debug log upon hand start: ");
+    debugShit();
 }
 
 function replaceStartButton() {
@@ -332,6 +355,28 @@ function endHand() {
     playAgainButton.addEventListener('click', startHand);
 
     buttonArea.appendChild(playAgainButton);
+}
+
+function debugShit() {
+    let currentElement = ""
+    const deckStringified = []
+
+    console.log("Player's hand: ");
+    for (let i = 0; i < playerHand.length; i++) {
+        console.log(playerHand[i].rank.toString() + playerHand[i].suit.toString());
+    }
+
+    console.log("Dealer's hand: ");
+    for (let i = 0; i < dealerHand.length; i++) {
+        console.log(dealerHand[i].rank.toString() + dealerHand[i].suit.toString());
+    }
+    
+    console.log("Deck contents: ");
+    for (let i = 0; i < deck.length; i++) {
+        currentElement = deck[i].rank.toString() + deck[i].suit.toString();
+        deckStringified.push(currentElement);
+    }
+    console.log(deckStringified.toString());
 }
 
 // TODO: make player able to choose ace value
