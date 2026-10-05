@@ -216,10 +216,12 @@ function hitPlayer() {
     console.log (playerHand[lastCard].value);
     console.log(playerHandValue);
 
-    if (playerHandValue > 21) {
-        alert("You busted!");
-        dealerTurn();
-    }
+    setTimeout(function() {
+        if (playerHandValue > 21) {
+            alert("You busted!");
+            dealerTurn();
+        }
+    }, 300)
 }
 
 function hitDealer() {
@@ -259,7 +261,7 @@ function dealerTurn() {
         }
     }
     
-    endHand();
+    setTimeout(endHand, 300);
 }
 
 function endHand() {
