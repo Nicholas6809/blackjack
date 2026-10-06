@@ -1,12 +1,19 @@
-const deck = [];
-const dealerHand = [];
+// Arrays
+
 const playerHand = [];
+const dealerHand = [];
+const deck = [];
 const leftoverDeck = [];
+
+const suits = ["clubs", "diamonds", "hearts", "spades"];
+
+// Variables
 
 let playerHandValue = 0;
 let dealerHandValue = 0;
 
-// lookup table for card images so i dont have to rename my card files
+// Image lookup table
+
 const cardImgs = {
     "1clubs": "imgs/ace_clubs.png",
     "2clubs": "imgs/two_clubs.png",
@@ -62,6 +69,8 @@ const cardImgs = {
     "13spades": "imgs/king_spades.png",
 }
 
+// Card class
+
 class Card {
     constructor(rank, suit) {
         this.rank = rank;
@@ -69,72 +78,20 @@ class Card {
     }
 }
 
-function makeDeck() {
-    const suits = ["Spades", "Hearts", "Clubs", "Diamonds"];
+const buttonArea = document.getElementById('button-area');
 
+// Deck handling
+
+// Create the deck
+function makeDeck() {
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 13; j++) {
-            deck.push(new Card(j + 1, suits[i]))
+            deck.push(new Card(j + 1, suits[i]));
         }
     }
 }
 
-function drawCards(cnt) {
-    for (let i = 0; i < cnt; i++) {
-        if (deck.length < 1) {
-            const leftoverCnt = leftoverDeck.length;
-            for (let i = 0; i < leftoverCnt; i++) {
-                deck.unshift(leftoverDeck.shift());
-            }
-            shuffleDeck();
-            document.getElementById('leftovers').style.opacity = "0%";
-        }
-        playerHand.push(deck.shift());
-        displayUpdatedHand("player");
-        
-        debugShit();
-    }
-}
-
-function dealerDrawCards(cnt) {
-    for (let i = 0; i < cnt; i++) {
-        if (deck.length < 1) {
-            for (let i = 0; i < 52; i++) {
-                deck.unshift(leftoverDeck.shift());
-            }
-            shuffleDeck();
-            document.getElementById('leftovers').style.opacity = "0%";
-        }
-
-        dealerHand.push(deck.shift());
-        displayUpdatedHand("dealer");
-
-        debugShit();
-    }
-}
-
-function displayUpdatedHand(person) {
-    const displayedCards = document.getElementById(`${person}-hand`);
-    const cardImg = document.createElement('img');
-
-    switch (person) {
-        case "player":
-            cardImg.src = cardImgs[playerHand[playerHand.length - 1].rank + playerHand[playerHand.length - 1].suit.toLowerCase()];
-            break;
-        case "dealer":
-            cardImg.src = cardImgs[dealerHand[dealerHand.length - 1].rank + dealerHand[dealerHand.length - 1].suit.toLowerCase()];
-            break;
-        default:
-            console.log("Oops! Either you're seeing this because you passed an unsupported argument to displayUpdatedHand(), or you forgot break keywords when writing this switch case. Check your code dingus")
-    }
-    
-    cardImg.style.width = "7.5rem";
-    cardImg.style.borderRadius = "0.5rem";
-    cardImg.style.margin = "0.5rem";
-
-    displayedCards.appendChild(cardImg);
-}
-
+// Shuffle the deck
 function shuffleDeck() {
     for (let i = deck.length - 1; i > 0; i--) {
     	const j = Math.floor(Math.random() * (i + 1));
@@ -142,65 +99,96 @@ function shuffleDeck() {
   	}
 }
 
-function startHand() {
-    const displayedCards = document.getElementById('player-hand');
-    const displayedDealerCards = document.getElementById('dealer-hand');
-    const displayedLeftovers = document.getElementById('leftovers');
+// Check if deck needs to be refilled and refill it
+function checkDeck() {
+    const deckEmpty = deck.length == 0;
+    const leftoverCnt = leftoverDeck.length;
 
-    playerHandValue = 0;
-    dealerHandValue = 0;
-
-    if (playerHand.length > 0) {
-        const handLength = playerHand.length;
-        console.log("Player's hand length is greater than 0")
-        for (let i = 0; i <= handLength; i++){
-            leftoverDeck.push(playerHand.shift());
+    if (deckEmpty) {
+        for (let i = 0; i < leftoverCnt; i++) {
+            deck.push(leftoverDeck.shift());
         }
-        displayedLeftovers.style.opacity = "100%";
+
+        shuffleDeck();
     }
-
-    if (dealerHand.length > 0) {
-        const handLength = dealerHand.length;
-        console.log("Dealer's hand length is greater than 0")
-        for (let i = 0; i <= handLength; i++){
-            leftoverDeck.push(dealerHand.shift());
-        }
-        displayedLeftovers.style.opacity = "100%";
-    }
-
-    displayedCards.innerHTML = "";
-    displayedDealerCards.innerHTML = "";
-
-    shuffleDeck();
-
-    for (let i = 0; i < 2; i++) {
-        hitDealer();
-        hitPlayer();
-    }
-
-    if (dealerHandValue > 21) {
-        dealerHandValue -= 10;
-    }
-
-    displayedDealerCards.lastElementChild.src = "imgs/back.png";
-
-    replaceStartButton();
-
-    console.log("Debug log upon hand start: ");
-    debugShit();
 }
 
-function replaceStartButton() {
-    const buttonArea = document.getElementById('button-area');
+// Deal cards to player and dealer
+function dealPlayerCard(cnt) {
+    for (let i = 0; i < cnt; i++) {
+        playerHand.push(deck.shift());
+    }
+}
 
-    while (buttonArea.childElementCount > 0) {
-        buttonArea.firstElementChild.remove();
+function dealDealerCard(cnt) {
+    for (let i = 0; i < cnt; i++) {
+        dealerHand.push(deck.shift());
+    }
+}
+
+// Send hand cards to leftovers
+function resetHands() {
+    const playerCardCnt = playerHand.length;
+    const dealerCardCnt = dealerHand.length;
+
+    for (let i = 0; i < playerCardCnt; i++) {
+        leftoverDeck.push(playerHand.shift());
     }
 
+    for (let i = 0; i < dealerCardCnt; i++) {
+        leftoverDeck.push(dealerHand.shift());
+    }
+}
+
+// Rendering
+
+// Update table cards
+function renderPlayerCards() {
+    const tableCards = document.getElementById('player-hand');
+    const cardImg = document.createElement('img');
+
+    cardImg.src = cardImgs[playerHand[playerHand.length - 1].rank + playerHand[playerHand.length - 1].suit];
+
+    // inline styling :yippee:
+    cardImg.style.width = "7.5rem";
+    cardImg.style.borderRadius = "0.5rem";
+    cardImg.style.margin = "0.5rem";
+
+    tableCards.appendChild(cardImg);
+}
+
+function renderDealerCards() {
+    const tableCards = document.getElementById('dealer-hand');
+    const cardImg = document.createElement('img');
+
+    cardImg.src = cardImgs[dealerHand[dealerHand.length - 1].rank + dealerHand[dealerHand.length - 1].suit];
+
+    // inline styling :yippee:
+    cardImg.style.width = "7.5rem";
+    cardImg.style.borderRadius = "0.5rem";
+    cardImg.style.margin = "0.5rem";
+
+    tableCards.appendChild(cardImg);
+}
+
+function renderTurnedCard() {
+    const cardImg = document.getElementById('dealer-hand').lastElementChild;
+    cardImg.src = cardImgs[dealerHand[dealerHand.length - 1].rank + dealerHand[dealerHand.length - 1].suit];
+}
+
+function unrenderCards() {
+    document.getElementById('player-hand').innerHTML = "";
+    document.getElementById('dealer-hand').innerHTML = "";
+}
+
+// Switch buttons
+function showHitStandButtons() {
     const hitButton = document.createElement('button');
     const standButton = document.createElement('button');
 
-    // Define the inline styles for the Hit button in a brute forcey way akin to Steve Harvey mark I
+    buttonArea.innerHTML = "";
+
+    // Define inline styles for hit button
     hitButton.id = "hit-button";
     hitButton.innerText = "Hit!";
     hitButton.style.paddingLeft = "0.5rem";
@@ -213,7 +201,7 @@ function replaceStartButton() {
     hitButton.style.borderRadius = "0.375rem";
     hitButton.style.color = "oklch(88.5% 0.062 18.334)";
 
-    // Repeat for Stand button
+    // Define inline styles for stand button
     standButton.id = "stand-button";
     standButton.innerText = "Stand!";
     standButton.style.paddingLeft = "0.5rem";
@@ -226,97 +214,140 @@ function replaceStartButton() {
     standButton.style.borderRadius = "0.375rem";
     standButton.style.color = "oklch(88.2% 0.059 254.128)";
 
-    // Add event listeners so that these actually do something
+    // Add event listeners to buttons
     hitButton.addEventListener("click", hitPlayer);
-    standButton.addEventListener("click", dealerTurn);
+    standButton.addEventListener("click", endPlayerTurn);
 
     buttonArea.appendChild(hitButton);
     buttonArea.appendChild(standButton);
 }
 
+function showPlayAgainButton() {
+    const playAgainButton = document.createElement('button');
+
+    buttonArea.innerHTML = "";
+
+    // Define inline styles for play again button
+    playAgainButton.id = "again-button";
+    playAgainButton.innerText = "Play again!";
+    playAgainButton.style.paddingLeft = "0.5rem";
+    playAgainButton.style.paddingRight = "0.5rem";
+    playAgainButton.style.paddingTop = "0.25rem";
+    playAgainButton.style.paddingBottom = "0.25rem";
+    playAgainButton.style.backgroundColor = "oklch(52.7% 0.154 150.069)";
+    playAgainButton.style.border = "2px solid oklch(79.2% 0.209 151.711)";
+    playAgainButton.style.borderRadius = "0.375rem";
+    playAgainButton.style.color = "oklch(92.5% 0.084 155.995)";
+
+    playAgainButton.addEventListener('click', beginHand);
+
+    buttonArea.appendChild(playAgainButton);
+}
+
+// Game logic
+
+// Hit player/dealer functions for convenience
 function hitPlayer() {
-    drawCards(1);
-
-    const lastCard = playerHand.length - 1;
-
-    switch (true) {
-        // TODO: make player able to choose ace value
-        // case playerHand[lastCard].rank == 1:
-        //     playerHand[lastCard].value = resolveAce();
-        //     break;
-        case playerHand[lastCard].rank < 11:
-            playerHand[lastCard].value = playerHand[lastCard].rank;
-            break;
-        case playerHand[lastCard].rank >= 11:
-            playerHand[lastCard].value = 10;
-            break;
-        default:
-            alert("fuck the switch case dont work")
-    }
-
-    playerHandValue += playerHand[lastCard].value;
-
-    console.log(playerHand[lastCard].value);
-    console.log(playerHandValue);
-
-    setTimeout(function() {
-        if (playerHandValue > 21) {
-            alert("You busted!");
-            dealerTurn();
-        }
-    }, 300)
+    checkDeck();
+    dealPlayerCard(1);
+    updatePlayerHandValue();
+    checkPlayerBust();
 }
 
 function hitDealer() {
-    dealerDrawCards(1);
-
-    const lastCard = dealerHand.length - 1;
-
-    switch (true) {
-        case dealerHand[lastCard].rank == 1:
-            if (dealerHandValue + 11 > 21) {
-                dealerHand[lastCard].value = 1;
-            }
-            else {
-                dealerHand[lastCard].value == 11;
-            }
-            break;
-        case dealerHand[lastCard].rank < 11:
-            dealerHand[lastCard].value = dealerHand[lastCard].rank;
-            break;
-        case dealerHand[lastCard].rank >= 11:
-            dealerHand[lastCard].value = 10;
-            break;
-        default:
-            alert("fuck the switch case dont work")
-    }
-
-    dealerHandValue += dealerHand[lastCard].value;
-
-    console.log(dealerHand[lastCard].value);
-    console.log(dealerHandValue);
-
-    setTimeout(function() {
-        if (dealerHandValue > 21) {
-            alert("Dealer busted!");
-        }
-    }, 300);
+    checkDeck();
+    dealDealerCard(1);
+    updateDealerHandValue();
+    checkDealerBust();
 }
 
-function dealerTurn() {
-    const lastCard = dealerHand.length - 1;
-    const cardImg = document.getElementById('dealer-hand').lastElementChild
-    cardImg.src = cardImgs[dealerHand[lastCard].rank + dealerHand[lastCard].suit.toLowerCase()];
+// Update hand values based on hand content
+function updatePlayerHandValue() {
+    const playerCardCnt = playerHand.length;
 
+    if (playerHand[playerCardCnt - 1].rank < 11) {
+        playerHandValue += playerHand[playerCardCnt - 1].rank;
+    }
+    else if (playerHand[playerCardCnt - 1].rank >= 11) {
+        playerHandValue += 10;
+    }
+    else {
+        console.log("The card drawn has not contributed to its hand's value.")
+    }
+
+    // debug purposes
+    console.log(playerHandValue);
+}
+
+function updateDealerHandValue() {
+    const dealerCardCnt = dealerHand.length;
+
+    if (dealerHand[dealerCardCnt - 1].rank < 11) {
+        dealerHandValue += dealerHand[dealerCardCnt - 1].rank;
+    }
+    else if (dealerHand[dealerCardCnt - 1].rank >= 11) {
+        dealerHandValue += 10;
+    }
+    else {
+        console.log("The card drawn has not contributed to its hand's value.")
+    }
+
+    // debug purposes
+    console.log(dealerHandValue);
+}
+
+// Deal starting cards
+function dealStartingCards() {
+    for (let i = 0; i < 2; i++) {
+        hitDealer();
+        hitPlayer();
+    }
+}
+
+// Handle start of hand
+function beginHand() {
+    playerHandValue = 0;
+    dealerHandValue = 0;
+
+    resetHands();
+    unrenderCards();
+    dealStartingCards();
+    renderTurnedCard();
+    showHitStandButtons();
+}
+
+// Check if player/dealer busted
+function checkPlayerBust() {
+    if (playerHandValue > 21) {
+        alert("You busted!")
+        endPlayerTurn();
+    }
+}
+
+function checkDealerBust() {
+    if (dealerHandValue > 21) {
+        alert("The dealer busted!")
+    }
+}
+
+// End player turn
+function endPlayerTurn() {
+    buttonArea.innerHTML = "";
+    beginDealerTurn();
+}
+
+// Dealer AI
+function beginDealerTurn() {
     if (playerHandValue < 21) {
         while (dealerHandValue < 17) {
             hitDealer();
         }
     }
-    
-    setTimeout(endHand, 300);
+
+    endHand();
 }
 
+// Determine if player won, display Play Again button
 function endHand() {
     let playerWin = false;
 
@@ -334,105 +365,19 @@ function endHand() {
         alert("You lose...")
     }
 
-    const buttonArea = document.getElementById('button-area');
-
-    buttonArea.firstElementChild.remove();
-    buttonArea.firstElementChild.remove();
-
-    const playAgainButton = document.createElement('button');
-
-    playAgainButton.id = "again-button";
-    playAgainButton.innerText = "Play again!";
-    playAgainButton.style.paddingLeft = "0.5rem";
-    playAgainButton.style.paddingRight = "0.5rem";
-    playAgainButton.style.paddingTop = "0.25rem";
-    playAgainButton.style.paddingBottom = "0.25rem";
-    playAgainButton.style.backgroundColor = "oklch(52.7% 0.154 150.069)";
-    playAgainButton.style.border = "2px solid oklch(79.2% 0.209 151.711)";
-    playAgainButton.style.borderRadius = "0.375rem";
-    playAgainButton.style.color = "oklch(92.5% 0.084 155.995)";
-
-    playAgainButton.addEventListener('click', startHand);
-
-    buttonArea.appendChild(playAgainButton);
+    showPlayAgainButton();
 }
 
-function debugShit() {
-    let currentElement = ""
-    const deckStringified = []
+// Debugging
 
-    console.log("Player's hand: ");
-    for (let i = 0; i < playerHand.length; i++) {
-        console.log(playerHand[i].rank.toString() + playerHand[i].suit.toString());
-    }
-
-    console.log("Dealer's hand: ");
-    for (let i = 0; i < dealerHand.length; i++) {
-        console.log(dealerHand[i].rank.toString() + dealerHand[i].suit.toString());
-    }
-    
-    console.log("Deck contents: ");
+function printDeckContents() {
     for (let i = 0; i < deck.length; i++) {
-        currentElement = deck[i].rank.toString() + deck[i].suit.toString();
-        deckStringified.push(currentElement);
+        console.log(deck[i].rank + deck[i].suit);
     }
-    console.log(deckStringified.toString());
 }
-
-// TODO: make player able to choose ace value
-// function resolveAce() {
-//     const buttonArea = document.getElementById('button-area');
-
-//     while (buttonArea.childElementCount > 0) {
-//         buttonArea.firstElementChild.remove();
-//     }
-
-//     const elevenButton = document.createElement('button');
-//     const oneButton = document.createElement('button');
-//     let value = 0;
-
-//     // Styling for eleven button
-
-//     elevenButton.id = "eleven-button";
-//     elevenButton.innerText = "11";
-//     elevenButton.style.paddingLeft = "0.5rem";
-//     elevenButton.style.paddingRight = "0.5rem";
-//     elevenButton.style.paddingTop = "0.25rem";
-//     elevenButton.style.paddingBottom = "0.25rem";
-//     elevenButton.style.marginRight = "0.5rem";
-//     elevenButton.style.backgroundColor = "oklch(37.3% 0.034 259.733)";
-//     elevenButton.style.border = "2px solid oklch(70.4% 0.04 256.788)";
-//     elevenButton.style.borderRadius = "0.375rem";
-//     elevenButton.style.color = "oklch(92.9% 0.013 255.508)";
-
-//     // Styling for one button
-
-//     oneButton.id = "one-button";
-//     oneButton.innerText = "1";
-//     oneButton.style.paddingLeft = "0.5rem";
-//     oneButton.style.paddingRight = "0.5rem";
-//     oneButton.style.paddingTop = "0.25rem";
-//     oneButton.style.paddingBottom = "0.25rem";
-//     oneButton.style.marginRight = "0.5rem";
-//     oneButton.style.backgroundColor = "oklch(37.3% 0.034 259.733)";
-//     oneButton.style.border = "2px solid oklch(70.4% 0.04 256.788)";
-//     oneButton.style.borderRadius = "0.375rem";
-//     oneButton.style.color = "oklch(92.9% 0.013 255.508)";
-
-//     elevenButton.addEventListener("click", function() {
-//         value = 11;
-//         replaceStartButton();
-//     })
-
-//     oneButton.addEventListener("click", function() {
-//         value = 1;
-//         replaceStartButton();
-//     })
-
-//     buttonArea.appendChild(elevenButton);
-//     buttonArea.appendChild(oneButton);
-
-//     return value;
-// }
-
+// Make and shuffle the deck (very very important)
 makeDeck();
+shuffleDeck();
+printDeckContents();
+
+// TODO: Flip hole card
