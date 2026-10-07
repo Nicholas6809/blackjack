@@ -17,7 +17,10 @@
   "build": {
     "appId": "com.Nicholas.blackjack",
     "productName": "blackjack",
-    "icon": "build/icon.svg"
+    "icon": "build/icon.svg",
+    "linux": {
+      "desktopName": "com.Nicholas.blackjack.desktop"
+    }
   }
 }
 
