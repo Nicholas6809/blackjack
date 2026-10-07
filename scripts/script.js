@@ -78,6 +78,8 @@ class Card {
     }
 }
 
+// Shorthand variables
+
 const buttonArea = document.getElementById('button-area');
 
 // Deck handling
@@ -106,7 +108,8 @@ function checkDeck() {
 
     if (deckEmpty) {
         for (let i = 0; i < leftoverCnt; i++) {
-            deck.push(leftoverDeck.shift());
+            deck.push(leftoverDeck[0]);
+            leftoverDeck.shift();
         }
 
         shuffleDeck();
@@ -134,11 +137,13 @@ function resetHands() {
     const dealerCardCnt = dealerHand.length;
 
     for (let i = 0; i < playerCardCnt; i++) {
-        leftoverDeck.push(playerHand.shift());
+        leftoverDeck.push(playerHand[0]);
+        playerHand.shift();
     }
 
     for (let i = 0; i < dealerCardCnt; i++) {
-        leftoverDeck.push(dealerHand.shift());
+        leftoverDeck.push(dealerHand[0]);
+        dealerHand.shift();
     }
 }
 
@@ -327,14 +332,16 @@ function beginHand() {
 // Check if player/dealer busted
 function checkPlayerBust() {
     if (playerHandValue > 21) {
-        alert("You busted!")
-        endPlayerTurn();
+        setTimeout(function() {
+            alert("You busted!")
+            endPlayerTurn()
+        }, 300);
     }
 }
 
 function checkDealerBust() {
     if (dealerHandValue > 21) {
-        alert("The dealer busted!")
+        setTimeout(alert("The dealer busted!"), 300);
     }
 }
 
@@ -347,7 +354,7 @@ function endPlayerTurn() {
 // Dealer AI
 function beginDealerTurn() {
     unflipHoleCard();
-    
+
     if (playerHandValue < 21) {
         while (dealerHandValue < 17) {
             hitDealer();
@@ -368,14 +375,16 @@ function endHand() {
         playerWin = true;
     }
 
-    if (playerWin) {
-        alert("You win!")
-    }
-    else {
-        alert("You lose...")
-    }
+    setTimeout(function() {
+        if (playerWin) {
+            alert("You win!")
+        }
+        else {
+            alert("You lose...")
+        }
 
     showPlayAgainButton();
+    }, 300);
 }
 
 // Debugging
@@ -388,6 +397,3 @@ function printDeckContents() {
 // Make and shuffle the deck (very very important)
 makeDeck();
 shuffleDeck();
-printDeckContents();
-
-// TODO: Flip hole card
