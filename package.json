@@ -1,6 +1,6 @@
 {
   "name": "blackjack",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A blackjack app I made to celebrate the fact that I managed to code a deck of cards in Javascript",
   "main": "main.js",
   "author": "Nicholas",
@@ -11,7 +11,12 @@
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.0",
     "electron": "^44.5.1",
-    "electron-builder": "^26.15.3",
+    "electron-builder": "^26.5.0",
     "tailwindcss": "^4.3.3"
+  },
+  "build": {
+    "appId": "com.Nicholas.blackjack",
+    "productName": "blackjack",
+    "icon": "build/icon.svg"
   }
 }
