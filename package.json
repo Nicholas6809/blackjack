@@ -11,17 +11,12 @@
   "devDependencies": {
     "@tailwindcss/cli": "^4.3.0",
     "electron": "^44.5.1",
-    "electron-builder": "^26.15.3",
+    "electron-builder": "^26.5.0",
     "tailwindcss": "^4.3.3"
   },
   "build": {
     "appId": "com.Nicholas.blackjack",
     "productName": "blackjack",
-    "icon": "build/icon.svg",
-    "linux": {
-      "desktopName": "com.Nicholas.blackjack.desktop"
-    }
+    "icon": "build/icon.svg"
   }
 }
-
-
