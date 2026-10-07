@@ -339,6 +339,8 @@ function beginHand() {
 // Check if player/dealer busted
 function checkPlayerBust() {
     if (playerHandValue > 21) {
+        document.getElementById('hit-button').disabled = true;
+        document.getElementById('stand-button').disabled = true;
         setTimeout(function() {
             alert("You busted!")
             endPlayerTurn()
