@@ -113,6 +113,8 @@ function checkDeck() {
         }
 
         shuffleDeck();
+
+        document.getElementById('leftovers').style.opacity = "0%";
     }
 }
 
@@ -145,6 +147,8 @@ function resetHands() {
         leftoverDeck.push(dealerHand[0]);
         dealerHand.shift();
     }
+
+    document.getElementById('leftovers').style.opacity = "100%";
 }
 
 // Rendering
@@ -322,7 +326,10 @@ function beginHand() {
     playerHandValue = 0;
     dealerHandValue = 0;
 
-    resetHands();
+    if (playerHand.length > 0 || dealerHand.length > 0) {
+        resetHands();
+    }
+
     unrenderCards();
     dealStartingCards();
     flipHoleCard();
