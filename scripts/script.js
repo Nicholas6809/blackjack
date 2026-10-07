@@ -116,13 +116,15 @@ function checkDeck() {
 // Deal cards to player and dealer
 function dealPlayerCard(cnt) {
     for (let i = 0; i < cnt; i++) {
-        playerHand.push(deck.shift());
+        playerHand.push(deck[0]);
+        deck.shift();
     }
 }
 
 function dealDealerCard(cnt) {
     for (let i = 0; i < cnt; i++) {
-        dealerHand.push(deck.shift());
+        dealerHand.push(deck[0]);
+        deck.shift();
     }
 }
 
@@ -143,7 +145,7 @@ function resetHands() {
 // Rendering
 
 // Update table cards
-function renderPlayerCards() {
+function renderPlayerLastCard() {
     const tableCards = document.getElementById('player-hand');
     const cardImg = document.createElement('img');
 
@@ -157,7 +159,7 @@ function renderPlayerCards() {
     tableCards.appendChild(cardImg);
 }
 
-function renderDealerCards() {
+function renderDealerLastCard() {
     const tableCards = document.getElementById('dealer-hand');
     const cardImg = document.createElement('img');
 
@@ -250,6 +252,7 @@ function showPlayAgainButton() {
 function hitPlayer() {
     checkDeck();
     dealPlayerCard(1);
+    renderPlayerLastCard();
     updatePlayerHandValue();
     checkPlayerBust();
 }
@@ -257,6 +260,7 @@ function hitPlayer() {
 function hitDealer() {
     checkDeck();
     dealDealerCard(1);
+    renderDealerLastCard();
     updateDealerHandValue();
     checkDealerBust();
 }
