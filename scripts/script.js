@@ -173,7 +173,11 @@ function renderDealerLastCard() {
     tableCards.appendChild(cardImg);
 }
 
-function renderTurnedCard() {
+function flipHoleCard() {
+    const cardImg = document.getElementById('dealer-hand').lastElementChild;
+    cardImg.src = "imgs/back.png";
+}
+function unflipHoleCard() {
     const cardImg = document.getElementById('dealer-hand').lastElementChild;
     cardImg.src = cardImgs[dealerHand[dealerHand.length - 1].rank + dealerHand[dealerHand.length - 1].suit];
 }
@@ -316,7 +320,7 @@ function beginHand() {
     resetHands();
     unrenderCards();
     dealStartingCards();
-    renderTurnedCard();
+    flipHoleCard();
     showHitStandButtons();
 }
 
@@ -342,6 +346,8 @@ function endPlayerTurn() {
 
 // Dealer AI
 function beginDealerTurn() {
+    unflipHoleCard();
+    
     if (playerHandValue < 21) {
         while (dealerHandValue < 17) {
             hitDealer();
