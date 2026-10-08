@@ -78,6 +78,12 @@ class Card {
     }
 }
 
+// Sleep function
+
+function sleep(ms = 0) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // Shorthand variables
 
 const buttonArea = document.getElementById('button-area');
@@ -314,15 +320,25 @@ function updateDealerHandValue() {
 }
 
 // Deal starting cards
+
 function dealStartingCards() {
-    for (let i = 0; i < 2; i++) {
-        hitDealer();
-        hitPlayer();
-    }
+    return new Promise(async resolve => {
+        for (let i = 0; i < 2; i++) {
+            hitDealer();
+            if (i == 1) {
+                flipHoleCard();
+            }
+            await sleep(600);
+            hitPlayer();
+            await sleep(600);
+        }
+
+        resolve();
+    });
 }
 
 // Handle start of hand
-function beginHand() {
+async function beginHand() {
     const playerHandLabel = document.getElementById("player-label");
     const dealerHandLabel = document.getElementById("dealer-label");
     const header = document.getElementById("header");
@@ -330,6 +346,7 @@ function beginHand() {
     playerHandLabel.style.opacity = "100%";
     dealerHandLabel.style.opacity = "100%";
     header.innerHTML = ""
+    buttonArea.innerHTML = "";
 
     playerHandValue = 0;
     dealerHandValue = 0;
@@ -339,8 +356,7 @@ function beginHand() {
     }
 
     unrenderCards();
-    dealStartingCards();
-    flipHoleCard();
+    await dealStartingCards();
     showHitStandButtons();
 }
 
@@ -368,11 +384,13 @@ function endPlayerTurn() {
 }
 
 // Dealer AI
-function beginDealerTurn() {
+async function beginDealerTurn() {
+    await sleep(600);
     unflipHoleCard();
 
     if (playerHandValue < 21) {
         while (dealerHandValue < 17) {
+            await sleep(600);
             hitDealer();
         }
     }
@@ -402,7 +420,7 @@ function endHand() {
         }
 
     showPlayAgainButton();
-    }, 300);
+    }, 600);
 }
 
 // Debugging
