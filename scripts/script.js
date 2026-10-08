@@ -78,6 +78,12 @@ class Card {
     }
 }
 
+// Sleep function
+
+function sleep(ms = 0) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 // Shorthand variables
 
 const buttonArea = document.getElementById('button-area');
@@ -314,15 +320,34 @@ function updateDealerHandValue() {
 }
 
 // Deal starting cards
+
 function dealStartingCards() {
-    for (let i = 0; i < 2; i++) {
-        hitDealer();
-        hitPlayer();
-    }
+    return new Promise(async resolve => {
+        for (let i = 0; i < 2; i++) {
+            hitDealer();
+            if (i == 1) {
+                flipHoleCard();
+            }
+            await sleep(600);
+            hitPlayer();
+            await sleep(600);
+        }
+
+        resolve();
+    });
 }
 
 // Handle start of hand
-function beginHand() {
+async function beginHand() {
+    const playerHandLabel = document.getElementById("player-label");
+    const dealerHandLabel = document.getElementById("dealer-label");
+    const header = document.getElementById("header");
+
+    playerHandLabel.style.opacity = "100%";
+    dealerHandLabel.style.opacity = "100%";
+    header.innerHTML = ""
+    buttonArea.innerHTML = "";
+
     playerHandValue = 0;
     dealerHandValue = 0;
 
@@ -331,8 +356,7 @@ function beginHand() {
     }
 
     unrenderCards();
-    dealStartingCards();
-    flipHoleCard();
+    await dealStartingCards();
     showHitStandButtons();
 }
 
@@ -341,16 +365,15 @@ function checkPlayerBust() {
     if (playerHandValue > 21) {
         document.getElementById('hit-button').disabled = true;
         document.getElementById('stand-button').disabled = true;
-        setTimeout(function() {
-            alert("You busted!")
-            endPlayerTurn()
-        }, 300);
+        document.getElementById('header').innerHTML = "You busted!";
+        setTimeout(endPlayerTurn, 300);
     }
 }
 
 function checkDealerBust() {
     if (dealerHandValue > 21) {
-        setTimeout(alert("The dealer busted!"), 300);
+        document.getElementById('header').innerHTML = "Dealer busted!";
+        setTimeout(endHand, 300);
     }
 }
 
@@ -361,16 +384,20 @@ function endPlayerTurn() {
 }
 
 // Dealer AI
-function beginDealerTurn() {
+async function beginDealerTurn() {
+    await sleep(600);
     unflipHoleCard();
 
     if (playerHandValue < 21) {
         while (dealerHandValue < 17) {
+            await sleep(600);
             hitDealer();
         }
     }
 
-    endHand();
+    if (dealerHandValue < 22) {
+        endHand();
+    }
 }
 
 // Determine if player won, display Play Again button
@@ -386,14 +413,14 @@ function endHand() {
 
     setTimeout(function() {
         if (playerWin) {
-            alert("You win!")
+            document.getElementById('header').innerHTML = "You win!";
         }
         else {
-            alert("You lose...")
+            document.getElementById('header').innerHTML = "You lose...";
         }
 
     showPlayAgainButton();
-    }, 300);
+    }, 600);
 }
 
 // Debugging
