@@ -323,6 +323,12 @@ function dealStartingCards() {
 
 // Handle start of hand
 function beginHand() {
+    const playerHandLabel = document.getElementById("player-label");
+    const dealerHandLabel = document.getElementById("dealer-label");
+
+    playerHandLabel.style.opacity = "100%";
+    dealerHandLabel.style.opacity = "100%";
+    
     playerHandValue = 0;
     dealerHandValue = 0;
 

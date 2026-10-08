@@ -13,6 +13,7 @@
     --color-green-700: oklch(52.7% 0.154 150.069);
     --color-purple-950: oklch(29.1% 0.149 302.717);
     --color-fuchsia-700: oklch(51.8% 0.253 323.949);
+    --color-white: #fff;
     --spacing: 0.25rem;
     --radius-md: 0.375rem;
     --radius-lg: 0.5rem;
@@ -311,6 +312,9 @@
   }
   .text-green-200 {
     color: var(--color-green-200);
+  }
+  .text-white {
+    color: var(--color-white);
   }
   .underline {
     text-decoration-line: underline;
