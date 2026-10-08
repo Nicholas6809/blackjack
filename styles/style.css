@@ -208,6 +208,15 @@
   .h-4 {
     height: calc(var(--spacing) * 4);
   }
+  .h-42 {
+    height: calc(var(--spacing) * 42);
+  }
+  .h-\[11\.9\] {
+    height: 11.9;
+  }
+  .h-\[11\.9rem\] {
+    height: 11.9rem;
+  }
   .h-auto {
     height: auto;
   }
